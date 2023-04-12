@@ -29,6 +29,7 @@ interface Schema {
   standaloneApi?: boolean;
   routing?: boolean;
   packageManager?: PackageManager;
+  presetVersion?: string;
 }
 
 export interface NormalizedSchema extends Schema {
@@ -102,15 +103,12 @@ function normalizeOptions(options: Schema): NormalizedSchema {
   // If the preset already contains a version in the name
   // -- my-package@2.0.1
   // -- @scope/package@version
-  const preset = options.preset;
-  const packageName = preset.match(/.+@/)
-    ? preset[0] + preset.substring(1).split('@')[0]
-    : preset;
-  if (packageName) {
-    normalized.preset = packageName;
-    if (preset.substring(1).split('@').length) {
-      normalized.presetVersion = preset.substring(1).split('@')[1];
-    }
+  const match = options.preset.match(
+    /^(?<package>(@.+(\/).)?[^@]+)(@(?<version>.+))?$/
+  );
+  if (match) {
+    normalized.preset = match.groups.package;
+    normalized.presetVersion = options.presetVersion ?? match.groups.version;
   }
 
   normalized.isCustomPreset = !Object.values(Preset).includes(

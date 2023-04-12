@@ -1,3 +1,5 @@
+import type { Linter } from '@nrwl/linter';
+
 export interface CreatePackageSchema {
   name: string;
   project: string;
@@ -13,4 +15,7 @@ export interface CreatePackageSchema {
   compiler: 'swc' | 'tsc';
   importPath?: string;
   rootProject?: boolean;
+
+  // options to create e2e project, passed to e2e project generator
+  e2eTestRunner?: 'jest' | 'none';
 }

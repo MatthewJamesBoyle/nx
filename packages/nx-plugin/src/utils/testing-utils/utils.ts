@@ -125,9 +125,7 @@ export function readFile(path: string): string {
  * Deletes the e2e directory
  */
 export function cleanup(): void {
-  try {
-    removeSync(tmpProjPath());
-  } catch (e) {}
+  removeSync(tmpProjPath());
 }
 
 /**
@@ -135,6 +133,10 @@ export function cleanup(): void {
  */
 export function rmDist(): void {
   removeSync(`${tmpProjPath()}/dist`);
+}
+
+export function removeTmpProject(project: string): void {
+  removeSync(`${tmpProjPath()}/${project}`);
 }
 
 /**

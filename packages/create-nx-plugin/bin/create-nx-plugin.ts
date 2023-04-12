@@ -62,9 +62,26 @@ async function determinePluginName(
   return results.pluginName;
 }
 
+async function determineCreatePackageName(
+  parsedArgs: CreateNxPluginArguments
+): Promise<string> {
+  if (parsedArgs.createPackageName) {
+    return Promise.resolve(parsedArgs.createPackageName);
+  }
+
+  const results = await enquirer.prompt<{ createPackageName: string }>([
+    {
+      name: 'createPackageName',
+      message: `Create package name (optional)           `,
+      type: 'input',
+    },
+  ]);
+  return results.createPackageName;
+}
+
 interface CreateNxPluginArguments {
   pluginName: string;
-  cliName?: string;
+  createPackageName?: string;
   packageManager: PackageManager;
   ci: CI;
   allPrompts: boolean;
@@ -139,6 +156,7 @@ async function normalizeArgsMiddleware(
 ): Promise<void> {
   try {
     const pluginName = await determinePluginName(argv);
+    const createPackageName = await determineCreatePackageName(argv);
     const packageManager = await determinePackageManager(argv);
     const defaultBase = await determineDefaultBase(argv);
     const nxCloud = await determineNxCloud(argv);
@@ -146,6 +164,7 @@ async function normalizeArgsMiddleware(
 
     Object.assign(argv, {
       pluginName,
+      createPackageName,
       nxCloud,
       packageManager,
       defaultBase,
